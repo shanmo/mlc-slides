@@ -32,6 +32,11 @@ _paginate: false
     - development form: PyTorch, TensorFlow, etc 
     - Deployment form: elements needed to execute the ML applications
 
+- goals: 
+    - Integration and dependency minimization
+    - Leveraging hardware native acceleration
+    - Optimization to minimize memory usage or improve execution efficiency
+
 ---
 
 # References 
