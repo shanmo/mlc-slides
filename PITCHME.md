@@ -16,14 +16,21 @@ _paginate: false
 # Motivation 
 
 - Increasing need to deploy AI to end devices 
-    - Self-driving car 
-    - Smart home devices 
-    - Smartphones 
+    - Privacy protection 
+    - Distributed learning 
 
 - Deploy trained NN models can be challenging 
     - variations in hardware, e.g. ARM, x86, GPU, FPGA  
     - diversities in the OS, e.g. Windows, Ubuntu, Mac 
     - different accelerators, e.g. `TVM`, Tensor-RT, XLA OpenVino
+
+---
+
+# ML Compilation
+
+- transform, optimize ML execution from `development` to `deployment`
+    - development form: PyTorch, TensorFlow, etc 
+    - Deployment form: elements needed to execute the ML applications
 
 ---
 
