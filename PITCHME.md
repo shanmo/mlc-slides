@@ -116,6 +116,14 @@ for i_0 in tir.parallel(8):
 
 ---
 
+# <!--fit--> Tensor Program Transformation
+
+- reorder to access rows for matrix multiplication ([image source](https://tvm.d2l.ai/chapter_cpu_schedules/matmul.html))
+![img](https://user-images.githubusercontent.com/8708551/175759096-f8e260ac-f88d-4bc8-8a4a-dcdff527b560.png)
+![img](https://user-images.githubusercontent.com/8708551/175759019-89d42afe-6493-4950-903d-26cdc39d215b.png)
+
+---
+
 # References 
 
 - [Machine Learning Compiler](https://mlc.ai/summer22/)
