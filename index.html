@@ -135,6 +135,12 @@ i_0, i_1, i_2 = sch.split(i, factors=[<span class="hljs-literal">None</span>, <s
 <img src="https://user-images.githubusercontent.com/8708551/175759096-f8e260ac-f88d-4bc8-8a4a-dcdff527b560.png" alt="img" /><br />
 <img src="https://user-images.githubusercontent.com/8708551/175759019-89d42afe-6493-4950-903d-26cdc39d215b.png" alt="img" /></li>
 </ul>
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">reorder</span>(<span class="hljs-params">n</span>):
+    s, (A, B, C) = default(n)
+    (x, y), (k,) = C.op.axis, C.op.reduce_axis
+    s[C].reorder(x, k, y)
+    <span class="hljs-keyword">return</span> s, (A, B, C)
+</code></pre>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="9" data-paginate="true" data-theme="uncover" data-marpit-pagination="9" data-marpit-pagination-total="9" style="--paginate:true;--theme:uncover;">
 <h1>References</h1>
