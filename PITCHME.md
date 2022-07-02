@@ -39,6 +39,15 @@ _paginate: false
 
 ---
 
+# ML Compilation
+
+- MLC is the `programmatic transformations`
+![img](https://user-images.githubusercontent.com/8708551/176990173-97f98532-6a95-48fd-906f-5e6f35808e2b.png)
+
+![img](https://user-images.githubusercontent.com/8708551/176990178-fa9505b5-9930-44e7-8a28-622edd5880d6.png)
+
+---
+
 # Abstractions
 
 - ways to represent the same system interface, e.g. `vector add`
@@ -128,6 +137,13 @@ def reorder(n):
     s[C].reorder(x, k, y)
     return s, (A, B, C)
 ```
+
+---
+
+# <!--fit--> Tensor Program Transformation
+
+- leveraging the advantage brought by `data locality` is one of the most important performance optimization principles
+![img](https://user-images.githubusercontent.com/8708551/176990088-bc85928d-8ce7-4a58-a56f-ebb339f7c1fd.png)
 
 ---
 
