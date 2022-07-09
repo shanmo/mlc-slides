@@ -147,6 +147,36 @@ def reorder(n):
 
 ---
 
+# A simple MLP 
+
+- we can classify the image in `fashion MNIST` using a simple MLP
+![image](https://user-images.githubusercontent.com/8708551/178094462-6fa8c440-d8a2-4b0d-8d19-091e02ae0ef5.png)
+- computational graph 
+![image](https://user-images.githubusercontent.com/8708551/178094404-7150aa5f-2de8-4e5c-8b92-d770998ecbbc.png)
+
+---
+
+# A simple MLP 
+
+- in numpy 
+![image](https://user-images.githubusercontent.com/8708551/178094481-40a4411b-d072-416e-9452-bf4b449d2c2a.png)
+
+---
+
+# A simple MLP 
+
+- in low level numpy
+![img](https://user-images.githubusercontent.com/8708551/178094522-83b1bdcf-bc2d-42f6-a17a-e5ee55b05fb7.png)
+
+---
+
+# A simple MLP 
+
+- IRModule in TVMScript
+![img](https://user-images.githubusercontent.com/8708551/178094563-ee02688e-1277-49e1-8451-902e9c6dd837.png)
+
+---
+
 # References 
 
 - [Machine Learning Compiler](https://mlc.ai/summer22/)
