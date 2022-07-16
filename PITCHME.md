@@ -177,6 +177,14 @@ def reorder(n):
 
 ---
 
+# Probablistic programming
+
+- we can create a `search space` of possible programs depending on the specific decisions made at each sampling step
+- useful to experiment with parameters we are not certain, eg batch size of each loop 
+![image](https://user-images.githubusercontent.com/8708551/179339899-52e17d1e-f390-40af-b6d5-6dd7ddf5cf95.png)
+
+---
+
 # References 
 
 - [Machine Learning Compiler](https://mlc.ai/summer22/)
