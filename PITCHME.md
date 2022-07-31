@@ -196,6 +196,25 @@ def reorder(n):
 
 ---
 
+# Integration with pytorch
+
+- ML framework contains computation graph, which can be traversed topologically  
+- we can create a mapping of `computation graph` between tvm and the framework 
+```python
+MLPModuleHighLevel = from_fx(
+    fx.symbolic_trace(mlp_model), 
+    input_shapes = [(1, 784)], 
+    call_function_map={
+    },
+    call_module_map={
+        torch.nn.Linear: map_nn_linear_op,
+        torch.nn.ReLU: map_nn_relu_op,
+    },
+)
+```
+
+---
+
 # References 
 
 - [Machine Learning Compiler](https://mlc.ai/summer22/)
