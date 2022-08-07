@@ -215,6 +215,43 @@ MLPModuleHighLevel = from_fx(
 
 ---
 
+# GPU acceleration
+
+- A typical GPU contains two-level hierarchy
+    - Each thread is indexed by `threadIdx.x` and `blockIdx.x`
+- Shared memory helps cache data commonly used across the threads within the same block
+    - Encourage memory reuse during GPU optimization
+![image](https://user-images.githubusercontent.com/8708551/183281854-f7bc61fa-fd60-403d-a7ce-537601db017e.png)
+
+---
+
+# GPU acceleration
+
+- We can leverage the automatic program optimization framework to tune the program
+
+```python
+from tvm import meta_schedule as ms
+
+sch_tuned = ms.tune_tir(
+    mod=MyModuleMatmul,
+    target="nvidia/tesla-p100",
+    config=ms.TuneConfig(
+      max_trials_global=64,
+      num_trials_per_iter=64,
+    ),
+    work_dir="./tune_tmp",
+    task_name="main"
+)
+
+rt_mod = tvm.build(sch_tuned.mod, target="nvidia/tesla-p100")
+dev = tvm.cuda(0)
+evaluator = rt_mod.time_evaluator("main", dev, number=10)
+
+print("MetaSchedule: %f GFLOPS" % (num_flop / evaluator(A_nd, B_nd, C_nd).mean / 1e9))
+```
+
+---
+
 # References 
 
 - [Machine Learning Compiler](https://mlc.ai/summer22/)
