@@ -252,6 +252,64 @@ print("MetaSchedule: %f GFLOPS" % (num_flop / evaluator(A_nd, B_nd, C_nd).mean /
 
 ---
 
+# Hardware Acceleration
+
+- one emerging theme recently is `specialization`
+- we build our solutions on generic `scalar processors`, where we can perform operations on one floating point at a time
+- The `vector instructions` set such as AVX and ARM/Neon provide effective ways to speed up our programs but also bring some complexities to how we write the programs
+- latest accelerators for machine learning introduced specialized units for `tensor computing`, with instructions for multi-dimensional data copy and matrix/tensor computations
+
+---
+
+# Hardware Acceleration
+
+```python
+with T.block("tmm-16x16"):
+    T.reads(A[vi0 * 16 : vi0 * 16 + 16, vk0 * 16 : vk0 * 16 + 16], B[vj0 * 16 : vj0 * 16 + 16, vk0 * 16 : vk0 * 16 + 16])
+    T.writes(C[vi0 * 16 : vi0 * 16 + 16, vj0 * 16 : vj0 * 16 + 16])
+    ...
+```
+
+- This block reads from a 16x16 region from A and B, and writes to a 16x16 region of C. In this case the content of the block contains further details about a specific implementation of the subregion computations. 
+- We call this block a tensorized block as they contain computations that span over sub-regions of tensors.
+
+---
+
+# Hardware Acceleration
+
+```python
+@tvm.script.ir_module
+class MatmulModule:
+    @T.prim_func
+    def main(
+        A: T.Buffer[(1024, 1024), "float32"],
+        B: T.Buffer[(1024, 1024), "float32"],
+        C: T.Buffer[(1024, 1024), "float32"],
+    ) -> None:
+        T.func_attr({"global_symbol": "main", "tir.noalias": True})
+        for i, j, k in T.grid(1024, 1024, 1024):
+            with T.block("matmul"):
+                vi, vj, vk = T.axis.remap("SSR", [i, j, k])
+                with T.init():
+                    C[vi, vj] = T.float32(0)
+                C[vi, vj] += A[vi, vk] * B[vj, vk]
+```
+
+- TensorIR provides a primitive call `blockization` to group subregions of a loop together to form a tensorized computation block
+
+---
+
+# Hardware Acceleration
+
+- The remaining step is to map some of the tensorized blocks to use a specific implementation that maps to the hardware accelerated instructions. 
+    - This mapping process is called `tensorization`
+
+- To prepare for tensorization, we first register a tensor intrinsic (TensorIntrin) that contains a description of the computation and implementation
+
+- The system will use the description to find relevant regions that match the computation, while implementation maps the computation to accelerated hardware instructions
+
+---
+
 # References 
 
 - [Machine Learning Compiler](https://mlc.ai/summer22/)
