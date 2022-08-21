@@ -310,6 +310,87 @@ class MatmulModule:
 
 ---
 
+# Computational Graph Optimization
+
+- high-level transformations among computational graphs can be automated 
+
+![image](https://user-images.githubusercontent.com/8708551/185782275-cbee15bb-4460-4b99-b08a-5aee94bff494.png)
+
+---
+
+- rewrite the program: traverse MyModule's AST recursively and generate a transformed AST, using `visitor pattern`
+    - A Visitor class exposing methods that operate on each element
+    - A dispatch function that recursively walks over the tree and calls the relevant method on Visitor
+
+```python 
+@relax.expr_functor.mutator
+class EwiseFMARewriter(relax.PyExprMutator):
+    def visit_call_(self, call):
+        call = self.visit_expr_post_order(call)
+        add_op = tvm.ir.Op.get("relax.add")
+        multiply_op = tvm.ir.Op.get("relax.multiply")
+        ewise_fma_op = tvm.ir.Op.get("relax.ewise_fma")
+
+        if call.op != add_op:
+            return call
+
+        value = self.lookup_binding(call.args[0])
+        if not isinstance(value, relax.Call) or value.op != multiply_op:
+            return call
+        
+        fma_call = relax.Call(
+            ewise_fma_op, [value.args[0], value.args[1], call.args[1]], None, None
+        )
+        return fma_call
+
+
+updated_fn = EwiseFMARewriter().visit_expr(MyModule["main"])
+updated_fn.show()
+```
+
+---
+
+- result rewrites gv0 to the fused operator but leaves lv0 in the code
+
+```python 
+@R.function
+def main(x: Tensor((3, 4), "float32"), y: Tensor((3, 4), "float32")) -> Tensor(None, "float32", ndim = 2):
+    # block 0
+    with R.dataflow():
+        gv0: Tensor((3, 4), "float32") = relax.ewise_fma(x, y, y)
+        R.output(gv0)
+    return gv0
+```
+
+---
+
+- The fused IRModule only contains calls into high-level operations
+
+- To further low-level optimization and code generation, we need to translate those high-level primitive operators into corresponding TensorIR functions
+    - we leverage the internal block builder in each Mutator and return the transformed value using call_te
+
+```python
+def map_dense(bb, call):
+    x, w = call.args
+    return bb.call_te(topi.nn.dense, x, w)
+
+def map_add(bb, call):
+    a, b = call.args
+    return bb.call_te(topi.add, a, b)
+
+def map_relu(bb, call):
+    return bb.call_te(topi.nn.relu, call.args[0])
+
+
+op_map = {
+  "relax.nn.dense": map_dense,
+  "relax.add": map_add,
+  "relax.nn.relu": map_relu
+}
+```
+
+---
+
 # References 
 
 - [Machine Learning Compiler](https://mlc.ai/summer22/)
